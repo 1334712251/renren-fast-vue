@@ -3,13 +3,13 @@ import http from './http'
 export const success_code = 0
 export const failed_code = 40000
 
-// const baseUrl = 'http://localhost:88/api'
+const baseUrl = 'http://localhost:88/api'
 
 const ossUrl = 'http://localhost:777/api'
 
 //分类列表
 export const categoryList = () => {
-  return http.requestGet('/product(backup)/category/list/tree');
+  return http.requestGet(baseUrl+'/product(backup)/category/list/tree');
 }
 //删除分类
 export const deleteCategory = (catId) => {
