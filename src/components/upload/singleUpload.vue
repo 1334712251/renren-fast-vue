@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div>
     <el-upload
       action="http://gathermall.oss-cn-beijing.aliyuncs.com"
@@ -20,8 +20,8 @@
   </div>
 </template>
 <script>
-  import {getUUID} from '@/utils'
-  import * as api from '../../api/api'
+  import {policy} from './policy'
+  import { getUUID } from '@/utils'
 
   export default {
     name: 'singleUpload',
@@ -29,17 +29,17 @@
       value: String
     },
     computed: {
-      imageUrl () {
-        return this.value
+      imageUrl() {
+        return this.value;
       },
-      imageName () {
+      imageName() {
         if (this.value != null && this.value !== '') {
-          return this.value.substr(this.value.lastIndexOf('/') + 1)
+          return this.value.substr(this.value.lastIndexOf("/") + 1);
         } else {
-          return null
+          return null;
         }
       },
-      fileList () {
+      fileList() {
         return [{
           name: this.imageName,
           url: this.imageUrl
@@ -47,13 +47,13 @@
       },
       showFileList: {
         get: function () {
-          return this.value !== null && this.value !== '' && this.value !== undefined
+          return this.value !== null && this.value !== ''&& this.value!==undefined;
         },
         set: function (newValue) {
         }
       }
     },
-    data () {
+    data() {
       return {
         dataObj: {
           policy: '',
@@ -65,44 +65,42 @@
           // callback:'',
         },
         dialogVisible: false
-      }
+      };
     },
     methods: {
-      emitInput (val) {
+      emitInput(val) {
         this.$emit('input', val)
       },
-      handleRemove (file, fileList) {
-        this.emitInput('')
+      handleRemove(file, fileList) {
+        this.emitInput('');
       },
-      handlePreview (file) {
-        this.dialogVisible = true
+      handlePreview(file) {
+        this.dialogVisible = true;
       },
-      beforeUpload (file) {
-        let _self = this
+      beforeUpload(file) {
+        let _self = this;
         return new Promise((resolve, reject) => {
-          api.policy().then(response => {
-            _self.dataObj.policy = response.data.policy
-            _self.dataObj.signature = response.data.signature
-            _self.dataObj.ossaccessKeyId = response.data.accessid
-            _self.dataObj.key = response.data.dir + getUUID() + '-${filename}'
-            _self.dataObj.dir = response.data.dir
-            _self.dataObj.host = response.data.host
-            //console.log(this.value)
+          policy().then(response => {
+            console.log("响应的数据",response);
+            _self.dataObj.policy = response.data.policy;
+            _self.dataObj.signature = response.data.signature;
+            _self.dataObj.ossaccessKeyId = response.data.accessid;
+            _self.dataObj.key = response.data.dir +getUUID()+'_${filename}';
+            _self.dataObj.dir = response.data.dir;
+            _self.dataObj.host = response.data.host;
+            console.log("响应的数据222。。。",_self.dataObj);
             resolve(true)
           }).catch(err => {
             reject(false)
           })
         })
       },
-      handleUploadSuccess (res, file) {
-        console.log('上传成功...')
-        this.showFileList = true
-        this.fileList.pop()
-        this.fileList.push({
-          name: file.name,
-          url: this.dataObj.host + '/' + this.dataObj.key.replace('${filename}', file.name)
-        })
-        this.emitInput(this.fileList[0].url)
+      handleUploadSuccess(res, file) {
+        console.log("上传成功...")
+        this.showFileList = true;
+        this.fileList.pop();
+        this.fileList.push({name: file.name, url: this.dataObj.host + '/' + this.dataObj.key.replace("${filename}",file.name) });
+        this.emitInput(this.fileList[0].url);
       }
     }
   }
