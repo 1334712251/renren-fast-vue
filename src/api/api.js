@@ -31,6 +31,6 @@ export const upDateBrandStatus = (brand) => {
 
 //获取签名
 export const policy = () => {
-  return http.requestGet(baseUrl+'/thirdparty/oss/party');
+  return http.requestGet(baseUrl+'/thirdparty/oss/policy');
 }
 
