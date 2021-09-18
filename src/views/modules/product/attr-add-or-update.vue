@@ -175,7 +175,7 @@ export default {
       this.attrGroups = [];
       this.dataForm.attrGroupId = "";
       this.dataForm.catelogId = path[path.length - 1];
-      if (path && path.length == 3) {
+      if (path && path.length === 3) {
         this.$http({
           url: this.$http.adornUrl(
             `/product/attrgroup/list/${path[path.length - 1]}`
@@ -183,13 +183,14 @@ export default {
           method: "get",
           params: this.$http.adornParams({ page: 1, limit: 10000000 })
         }).then(({ data }) => {
+          console.log("data-----------------",data)
           if (data && data.code === 0) {
             this.attrGroups = data.page.list;
           } else {
             this.$message.error(data.msg);
           }
         });
-      } else if (path.length == 0) {
+      } else if (path.length === 0) {
         this.dataForm.catelogId = "";
       } else {
         this.$message.error("请选择正确的分类");
