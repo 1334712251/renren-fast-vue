@@ -12,6 +12,8 @@ import '@/assets/scss/index.scss'
 import httpRequest from '@/utils/httpRequest' // api: https://github.com/axios/axios
 import { isAuth } from '@/utils'
 import cloneDeep from 'lodash/cloneDeep'
+import PubSub from 'pubsub-js'
+Vue.prototype.PubSub = PubSub
 
 Vue.use(ElementUI);
 Vue.use(VueCookie)
