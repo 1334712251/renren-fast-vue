@@ -17,7 +17,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="检索">
-            <el-input style="width:160px" v-model="dataForm.key" clearable></el-input>
+            <el-input style="width:160px" v-model="dataForm.key" clearable placeholder="id / 名称 / 描述"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="searchSpuInfo">查询</el-button>
