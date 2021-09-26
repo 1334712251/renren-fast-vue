@@ -96,170 +96,170 @@
 </template>
 
 <script>
-import AddOrUpdate from "./purchase-add-or-update";
-export default {
-  data() {
-    return {
-      currentRow: {},
-      dataForm: {
-        key: "",
-        status: ""
+  import AddOrUpdate from "./purchase-add-or-update";
+  export default {
+    data() {
+      return {
+        currentRow: {},
+        dataForm: {
+          key: "",
+          status: ""
+        },
+        dataList: [],
+        pageIndex: 1,
+        pageSize: 10,
+        totalPage: 0,
+        dataListLoading: false,
+        dataListSelections: [],
+        addOrUpdateVisible: false,
+        caigoudialogVisible: false,
+        userId: "",
+        userList: []
+      };
+    },
+    components: {
+      AddOrUpdate
+    },
+    activated() {
+      this.getDataList();
+    },
+    created() {
+
+    },
+    methods: {
+      opendrawer(row){
+        this.getUserList();
+        this.currentRow = row;
+        this.caigoudialogVisible = true;
       },
-      dataList: [],
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
-      dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false,
-      caigoudialogVisible: false,
-      userId: "",
-      userList: []
-    };
-  },
-  components: {
-    AddOrUpdate
-  },
-  activated() {
-    this.getDataList();
-  },
-  created() {
-    
-  },
-  methods: {
-    opendrawer(row){
-      this.getUserList();
-      this.currentRow = row;
-      this.caigoudialogVisible = true;
-    },
-    assignUser() {
-      let _this = this;
-      let user = {};
-      this.userList.forEach(item=>{
-        if(item.userId == _this.userId){
+      assignUser() {
+        let _this = this;
+        let user = {};
+        this.userList.forEach(item=>{
+          if(item.userId == _this.userId){
             user = item;
-        }
-      });
-      this.caigoudialogVisible = false;
-      this.$http({
-        url: this.$http.adornUrl(
-          `/ware/purchase/update`
-        ),
-        method: "post",
-        data: this.$http.adornData({
-          id: this.currentRow.id || undefined,
-          assigneeId: user.userId,
-          assigneeName: user.username,
-          phone: user.mobile,
-          status: 1
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$message({
-            message: "操作成功",
-            type: "success",
-            duration: 1500
-          });
-          
-          this.userId = "";
-          this.getDataList();
-        } else {
-          this.$message.error(data.msg);
-        }
-      });
-    },
-    getUserList() {
-      this.$http({
-        url: this.$http.adornUrl("/sys/user/list"),
-        method: "get",
-        params: this.$http.adornParams({
-          page: 1,
-          limit: 500
-        })
-      }).then(({ data }) => {
-        this.userList = data.page.list;
-      });
-    },
-    // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true;
-      this.$http({
-        url: this.$http.adornUrl("/ware/purchase/list"),
-        method: "get",
-        params: this.$http.adornParams({
-          page: this.pageIndex,
-          limit: this.pageSize,
-          key: this.dataForm.key
-        })
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list;
-          this.totalPage = data.page.totalCount;
-        } else {
-          this.dataList = [];
-          this.totalPage = 0;
-        }
-        this.dataListLoading = false;
-      });
-    },
-    // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val;
-      this.pageIndex = 1;
-      this.getDataList();
-    },
-    // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val;
-      this.getDataList();
-    },
-    // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val;
-    },
-    // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true;
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id);
-      });
-    },
-    // 删除
-    deleteHandle(id) {
-      var ids = id
-        ? [id]
-        : this.dataListSelections.map(item => {
-            return item.id;
-          });
-      this.$confirm(
-        `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        }
-      ).then(() => {
+          }
+        });
+        this.caigoudialogVisible = false;
         this.$http({
-          url: this.$http.adornUrl("/ware/purchase/delete"),
+          url: this.$http.adornUrl(
+            `/ware/purchase/update`
+          ),
           method: "post",
-          data: this.$http.adornData(ids, false)
+          data: this.$http.adornData({
+            id: this.currentRow.id || undefined,
+            assigneeId: user.userId,
+            assigneeName: user.username,
+            phone: user.mobile,
+            status: 1
+          })
         }).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
               message: "操作成功",
               type: "success",
-              duration: 1500,
-              onClose: () => {
-                this.getDataList();
-              }
+              duration: 1500
             });
+
+            this.userId = "";
+            this.getDataList();
           } else {
             this.$message.error(data.msg);
           }
         });
-      });
+      },
+      getUserList() {
+        this.$http({
+          url: this.$http.adornUrl("/sys/user/list"),
+          method: "get",
+          params: this.$http.adornParams({
+            page: 1,
+            limit: 500
+          })
+        }).then(({ data }) => {
+          this.userList = data.page.list;
+        });
+      },
+      // 获取数据列表
+      getDataList() {
+        this.dataListLoading = true;
+        this.$http({
+          url: this.$http.adornUrl("/ware/purchase/list"),
+          method: "get",
+          params: this.$http.adornParams({
+            page: this.pageIndex,
+            limit: this.pageSize,
+            key: this.dataForm.key
+          })
+        }).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.dataList = data.page.list;
+            this.totalPage = data.page.totalCount;
+          } else {
+            this.dataList = [];
+            this.totalPage = 0;
+          }
+          this.dataListLoading = false;
+        });
+      },
+      // 每页数
+      sizeChangeHandle(val) {
+        this.pageSize = val;
+        this.pageIndex = 1;
+        this.getDataList();
+      },
+      // 当前页
+      currentChangeHandle(val) {
+        this.pageIndex = val;
+        this.getDataList();
+      },
+      // 多选
+      selectionChangeHandle(val) {
+        this.dataListSelections = val;
+      },
+      // 新增 / 修改
+      addOrUpdateHandle(id) {
+        this.addOrUpdateVisible = true;
+        this.$nextTick(() => {
+          this.$refs.addOrUpdate.init(id);
+        });
+      },
+      // 删除
+      deleteHandle(id) {
+        var ids = id
+          ? [id]
+          : this.dataListSelections.map(item => {
+            return item.id;
+          });
+        this.$confirm(
+          `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }
+        ).then(() => {
+          this.$http({
+            url: this.$http.adornUrl("/ware/purchase/delete"),
+            method: "post",
+            data: this.$http.adornData(ids, false)
+          }).then(({ data }) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList();
+                }
+              });
+            } else {
+              this.$message.error(data.msg);
+            }
+          });
+        });
+      }
     }
-  }
-};
+  };
 </script>
